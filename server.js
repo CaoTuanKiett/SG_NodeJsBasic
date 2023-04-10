@@ -1,66 +1,14 @@
 const bodyParser = require('body-parser')
 const express = require('express')
+const webRouter = require('./src/router/web');
+const connection = require('./src/middleware/connectDB');
 const app = express()
 const port = 3000
 app.use(bodyParser.json({limit: '50mb', extended: true}));
 
+app.use(express.json({limit: '50mb'}));
 
-app.get('/', (req, res) => {
-  res.send('Hello World! hehehehe')
-})
-
-let users = [
-	{id: 1, name: "User1", age: 31}, 
-	{id: 2, name: "User2", age: 20},
-	{id: 3, name: "User1", age: 25}
-];
-
-app.get('/get/users', (req, res) => {
-  res.json(users);
-})
-
-app.post('/post/users', (req, res) => {
-  let user = req.body;
-  users.push(user);
-  res.json(user);
-})
-
-
-app.put('/put/users/:id', (req, res) => {
-  let id = req.params.id;
-  // let user = users.find(function(user){
-  // 	return user.id == id;
-  // });
-  
-  // user.name = req.body.name;
-  // user.age = req.body.age;
-  users = users.map(user => user.id == id ? {id : user.id , ...req.body} : user)
-  
-  res.json({id : id , ...req.body});
-
-})
-
-
-app.get('/users/:id', (req, res) => {
-  let id = req.params.id;
-  let user = users.find(function(user){
-  	return user.id == id;
-  });
-  res.json(user);
-
-});
-
-app.delete('/users/:id', (req, res) => {
-  let id = req.params.id;
-  let user = users.find(function(user){
-  	return user.id == id;
-  });
-  users.splice(users.indexOf(user), 1);
-  res.json(user);
-});
-
-
-
+webRouter(app);
 
 
 app.listen(port, () => {
