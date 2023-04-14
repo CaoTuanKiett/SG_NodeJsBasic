@@ -1,6 +1,6 @@
 const express = require('express')
 const validationChek = require('../middleware/validation');
-const connection = require('../middleware/connectDB');
+const connection = require('../database/connectDB');
 
 let router = express.Router();
 
@@ -8,90 +8,82 @@ const webRouter = (app) => {
     router.get('/', (req, res) => {
         res.send('Hello World! hehehehe')
       })
-      
-      let users = [
-        {
-          "id": 1,
-          "fullname": "Nguyen Huy Tuong",
-          "gender": true,
-          "age": 18
-        },
-        {
-          "id": 2,
-          "fullname": "Nguyen Thi Tuong",
-          "gender": false,
-          "age": 15
-        }
-      ];
-      
+
       // get all users
       router.get('/GET/user', (req, res) => {
 
         connection.query(
           'SELECT * FROM `users` ',
           function(err, results, fields) {
-            // console.log(results); 
-            // console.log(fields); 
             res.status(200).json(results);
           }
         );
-
-        // res.status(200).send(users);
-
-        // res.json(users);
       });
 
 
       // get user by id
       router.get('/GET/user/:id', (req, res) => {
-        let id = req.params.id;
-        let user = users.find(function(user){
-            return user.id == id;
-        });
-
-        
-        res.status(200).json(user);
+        connection.query(
+          'SELECT * FROM `users` WHERE `idUsers` = ?', [req.params.id],
+          function(err, results, fields) {
+            res.status(200).json(results);
+          }
+        );
       
       });
 
       // update user by id
-      router.put('/PUT/user/:id',validationChek, (req, res) => {
-        let id = req.params.id;
-        users = users.map(user => user.id == id ? {id : user.id , ...req.body} : user)        
-        
-        // res.status(204).send(users.i);
-        res.json({id : id , ...req.body});
+      router.put('/PUT/user/:id', (req, res) => {
+        connection.query(
+          'UPDATE `users` SET `fullname` = ?, `gender` = ?, `age` = ? WHERE `idUsers` = ?',
+            [req.body.fullname, req.body.gender, req.body.age, req.params.id],
+          function(err, results, fields) {
+            if (err){
+              console.log(err); 
+              res.status(500).json(err);
+            }
+            else
+              res.status(200).json({ message: 'Cập nhật bản ghi thành công' });
+          }
+        );
       
       })
 
       // add new user
       router.post('/POST/user', (req, res) => {
-
-        let idIncrease = users.length ;
-        idIncrease++;
-
-        let user = {
-          id : Math.floor(Math.random() * 10000000),
-          fullname : req.body.fullname,
-          gender : req.body.gender,
-          age : req.body.age,
-        };
         
-        users.push(user);
-        
-        // res.status(201).send();
-        res.json(user);
+        connection.query(
+          "INSERT INTO users(fullname, gender, age) VALUES(? , ? , ?)", [req.body.fullname, req.body.gender, req.body.age],
+          function (err, result) {
+            if (err)
+              {
+                console.log(err); 
+                res.status(500).json(err);
+              }
+            else
+              {
+                res.status(201).json({ message: "Thêm bản ghi thành công !!!" });
+                // console.log(result.insertId);
+                // res.status(201).json(
+                //   connection.query(
+                //     'SELECT * FROM `users` WHERE `idUsers` = ?', result.insertId,
+                //   )
+                //  );
+              }
+        }
+          );
 
       })
       
       
       router.delete('/DELETE/user/:id', (req, res) => {
-        let id = req.params.id;
-        let user = users.find(function(user){
-            return user.id == id;
-        });
-        users.splice(users.indexOf(user), 1);
-        // res.status(204).send();
+        connection.query(
+          'DELETE FROM `users` WHERE `idUsers` = ?', [req.params.id],
+          function(err, results, fields) {
+            res.status(200).json(results);
+            res.status(200).json({ message: "Xóa user thành công" });
+          }
+        );
       });
  
       return app.use('/', router);
