@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="app">
+        <div class="app__header">
+            <form method="POST" action="/create">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name"><br>
+              
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email"><br>
+              
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone"><br>
+              
+                <input type="submit" value="Create">
+              </form>
+              
+        </div>
+        <div class="app__content">
+            
+            <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>John</td>
+                    <td>john@example.com</td>
+                    <td>123456789</td>
+                  </tr>
+                  <tr>
+                    <td>Jane</td>
+                    <td>jane@example.com</td>
+                    <td>987654321</td>
+                  </tr>
+                </tbody>
+              </table>
+              
+        </div>
+        <div class="app__footer">
+            <h1>Footer</h1>
+            <img src="../image/cat1.jpg" alt="cattttt">
+        </div>
+
+
+
+    </div>
+</body>
+</html>
