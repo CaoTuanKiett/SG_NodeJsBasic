@@ -1,12 +1,13 @@
 const express = require('express')
 const validationChek = require('../middleware/validation');
 const connection = require('../database/connectDB');
+const viewEngine = require('../public/views/viewEngine');
 
 let router = express.Router();
 
 const webRouter = (app) => {
     router.get('/', (req, res) => {
-        res.send('Hello World! hehehehe')
+        res.render('main.ejs');
       })
 
       // get all users
