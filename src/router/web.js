@@ -2,19 +2,22 @@ const express = require('express')
 const validationChek = require('../middleware/validation');
 const connection = require('../database/connectDB');
 const viewEngine = require('../public/views/viewEngine');
+const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken');
 
 let router = express.Router();
 
+
 const webRouter = (app) => {
-    router.get('/', (req, res) => {
+    router.get('/HOME', (req, res) => {
         res.render('main.ejs');
-      })
+      });
 
       // get all users
       router.get('/GET/user', (req, res) => {
 
         connection.query(
-          'SELECT * FROM `users` ',
+          'SELECT * FROM `user` ',
           function(err, results, fields) {
             res.status(200).json(results);
           }
@@ -25,7 +28,7 @@ const webRouter = (app) => {
       // get user by id
       router.get('/GET/user/:id', (req, res) => {
         connection.query(
-          'SELECT * FROM `users` WHERE `idUsers` = ?', [req.params.id],
+          'SELECT * FROM `user` WHERE `idUsers` = ?', [req.params.id],
           function(err, results, fields) {
             res.status(200).json(results);
           }
@@ -36,7 +39,7 @@ const webRouter = (app) => {
       // update user by id
       router.put('/PUT/user/:id', (req, res) => {
         connection.query(
-          'UPDATE `users` SET `fullname` = ?, `gender` = ?, `age` = ? WHERE `idUsers` = ?',
+          'UPDATE `user` SET `fullname` = ?, `gender` = ?, `age` = ? WHERE `idUsers` = ?',
             [req.body.fullname, req.body.gender, req.body.age, req.params.id],
           function(err, results, fields) {
             if (err){
@@ -54,7 +57,7 @@ const webRouter = (app) => {
       router.post('/POST/user', (req, res) => {
         
         connection.query(
-          "INSERT INTO users(fullname, gender, age) VALUES(? , ? , ?)", [req.body.fullname, req.body.gender, req.body.age],
+          "INSERT INTO user(fullname, gender, age) VALUES(? , ? , ?)", [req.body.fullname, req.body.gender, req.body.age],
           function (err, result) {
             if (err)
               {
@@ -79,13 +82,20 @@ const webRouter = (app) => {
       
       router.delete('/DELETE/user/:id', (req, res) => {
         connection.query(
-          'DELETE FROM `users` WHERE `idUsers` = ?', [req.params.id],
+          'DELETE FROM `user` WHERE `idUsers` = ?', [req.params.id],
           function(err, results, fields) {
             res.status(200).json(results);
             res.status(200).json({ message: "Xóa user thành công" });
           }
         );
       });
+
+      router.get('/', (req, res) => {
+        res.render('login.ejs');
+      })
+
+
+
  
       return app.use('/', router);
 }
