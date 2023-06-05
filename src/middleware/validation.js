@@ -1,4 +1,4 @@
-const validationChek = (req, res, netx) => {
+const validationCheck = (req, res, netx) => {
 
     let name = req.body.fullname;
     let gender = req.body.gender;
@@ -23,4 +23,38 @@ const validationChek = (req, res, netx) => {
     }   
 }
 
-module.exports = validationChek;
+function validateRegister(req, res, next) {
+    if (req.body.username == null || req.body.password == null) {
+        return res.status(400).json({ message: 'Error validating' });
+    }
+    next();
+  }
+
+const validateLogin = (req, res, next) => {
+    let username = req.body.username;
+    let password = req.body.password;
+
+    if (!username || !password) {
+        res.status(400).json({message: "Please provide username and password"});
+    } else {
+        if(!/^[a-zA-ZÀ-ỹ\s]+$/.test(username.trim())){
+            res.status(400).json({message:"Invalid username"});
+        } else {
+            if(password.length < 3){
+                res.status(400).json({message: "Password must be at least 6 characters"});
+            } else {
+                next();
+            }
+        }
+    }
+}
+
+
+
+
+module.exports = {
+    validationCheck,
+    validateRegister,
+    validateLogin
+}
+
