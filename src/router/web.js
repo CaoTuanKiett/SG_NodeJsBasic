@@ -1,6 +1,6 @@
 const express = require('express')
 const validationChek = require('../middleware/validation');
-const connection = require('../database/connectDB');
+const connection = require('../database/db');
 const viewEngine = require('../public/views/viewEngine');
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
@@ -17,7 +17,7 @@ const webRouter = (app) => {
       router.get('/GET/user', (req, res) => {
 
         connection.query(
-          'SELECT * FROM `user` ',
+          'SELECT * FROM `users` ',
           function(err, results, fields) {
             res.status(200).json(results);
           }

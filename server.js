@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser')
 const express = require('express')
 const webRouter = require('./src/router/web');
+const userRouter = require('./src/router/users.router');
 const connection = require('./src/database/connectDB');
 const initDB = require('./src/database/init');
 const configViewEngine = require('./src/public/views/viewEngine');
@@ -17,9 +18,11 @@ const authRouter = require('./src/router/auth');
 
 
 
+
 app.use(express.json({limit: '50mb'}));
 
 webRouter(app);
+userRouter(app);
 authRouter(app);
 configViewEngine(app);
 
