@@ -1,4 +1,12 @@
+const jwt = require('jsonwebtoken');
+const { json } = require('body-parser');
 const knex = require('../database/connectDB');
+
+const {
+  hashPassword,
+  comparePassword,
+} = require('../middleware/hash');
+
 
 class userModels {
   tableName = 'users';
@@ -9,21 +17,46 @@ class userModels {
   email = 'email';
 
 
-  // getAllUsers = async () => {
-  //   try {
-  //     const result = await knex(this.tableName).select(this.idUser, this.username, this.password, this.salt, this.email);
-  //     console.log("get all users Successfully", { result });
-  //     return result;
-  //   } catch (err) {
-  //     console.log("Error getting all users", err);
-  //     throw err;
-  //   }
-  // }
+  register = (data) => {
+    return knex(this.tableName).where(this.username, data.username).then((result) => {
+      if (result.length > 0) {
+        return Promise.reject({ message: 'Username already exists' });
+      } else {
+        const { salt, hashedPassword } = hashPassword(data.password);
+        return knex(this.tableName).insert({
+          username: data.username,
+          password: hashedPassword,
+          salt: salt,
+          email: data.email
+        });
+      }
+    }
+    );
+
+  }
+
+  login = (data) => {
+    return knex(this.tableName).where(this.username, data.username).then((result) => {
+      if (result.length > 0) {
+        const user = result[0];
+        if (comparePassword(user.password, user.salt, data.password)) {
+          
+          return Promise.resolve(user);
+        } else {
+          return Promise.reject({ message: 'Wrong password' });
+        }
+      } else {
+        return Promise.reject({ message: 'Username does not exist' });
+      }
+    });
+  }
+
+
 
   selectAllUsers = () => {
     return knex(this.tableName).select(this.idUser, this.username, this.password, this.salt, this.email);
   }
-
+  
   
 
   getOneUser = (id) => {
@@ -52,6 +85,5 @@ class userModels {
 
 
 }
-
 
 module.exports = new userModels();

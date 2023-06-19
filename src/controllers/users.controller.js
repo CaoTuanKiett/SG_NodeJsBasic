@@ -1,6 +1,40 @@
 const userModels = require('../models/users.models');
 
 class userController {
+
+  register = async (req, res, next) => {
+    try {
+      const result = await userModels.register(req.body);
+      res.status(200).json(result);
+      console.log("register Successfully");
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
+
+  login = async (req, res, next) => {
+    try {
+      const result = await userModels.login(req.body);
+      // // cookie
+      // let token = {
+      //   username: result.username,
+      //   password: result.password,
+      // };
+      // res.cookie('token', token, { maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true });
+
+      res.status(200).json(result);
+      console.log("login Successfully");
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
+  
+  
+
+
+
   getAllUsers = async (req, res, next) => {
     // userModels.selectAllUsers()
     // .then((result) => { res.status(200).json(result); })
@@ -78,4 +112,8 @@ class userController {
 
 }
 
+
+
+
 module.exports = new userController();
+
