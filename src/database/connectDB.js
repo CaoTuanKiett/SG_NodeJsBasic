@@ -1,36 +1,16 @@
+const knex = require('knex');
+const config = require('../../knexfile');
 
+const environment = process.env.NODE_ENV || 'development';
+const db = knex(config[environment]);
 
-require('dotenv').config();
+// // Ví dụ truy vấn
+// db('users').select('*')
+//   .then((users) => {
+//     console.log("loggfg",users);
+//   })
+//   .catch((error) => {
+//     console.error('Lỗi khi truy vấn cơ sở dữ liệu:', error);
+//   });
 
-const knex = require('knex')({
-    client: 'mysql2',
-    connection: {
-        host : process.env.DB_HOST,
-        port : process.env.DB_PORT,
-        user : process.env.DB_USER,
-        password : process.env.DB_PASSWORD,
-        database : process.env.DB_NAME
-
-    },
-    pool: { min: 0, max: 10 },
-    migrations: {
-      directory: './database/migrations',
-    },
-    seeds: {
-      directory: './database/seeds',
-    }, 
-});
-
-knex.raw('select 1+1 as result').then(function () {
-    console.log('Database connection is working!');
-}).catch(function (err) {
-    console.log(err);
-    throw err;
-}).finally(function () {
-    // knex.destroy();
-});
-
-
-module.exports = knex;
-
-
+module.exports = db;

@@ -1,6 +1,6 @@
 const express = require('express')
 const validationChek = require('../middleware/validation');
-const connection = require('../database/connectDB');
+const connection = require('../database/db');
 const viewEngine = require('../public/views/viewEngine');
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
@@ -62,6 +62,7 @@ const authRouter = (app) => {
                 res.status(400).json({ message: "Tài khoản không tồn tại" });
               } else {
                 const user = result[0];
+                console.log("uewww",user);
                 // const hash = await hashPassword(password);
                 // console.log(hash);
                 if (comparePassword(user.password, user.salt, password)) {
@@ -71,6 +72,7 @@ const authRouter = (app) => {
                   console.log(req.headers.authorization);
                   res.cookie(username , accessToken, { maxAge: 900000, httpOnly: true });
                   res.status(200).json({ accessToken });
+                  console.log("Đăng nhập thành công");
                 } else {
                   res.status(400).json({ message: "Mật khẩu không đúng" });
                 }
